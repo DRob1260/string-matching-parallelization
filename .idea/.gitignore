@@ -7,5 +7,3 @@
 /dataSources/
 /dataSources.local.xml
 # compilations
-*.o
-test_search
