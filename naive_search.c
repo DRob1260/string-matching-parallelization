@@ -11,7 +11,7 @@ SearchResult naive_search(char *pattern, int patternSize, char *target, int targ
     searchResult.searchType = "Naive Serial Search";
     searchResult.matchIndexes = malloc((targetSize / patternSize) * sizeof(int));
     searchResult.matchTotal = 0;
-    double startTime = get_time();
+    double startTime = getTime();
 
     for(int t=0; t < targetSize; t++) {
         bool isMatch = true;
@@ -27,7 +27,7 @@ SearchResult naive_search(char *pattern, int patternSize, char *target, int targ
         }
     }
 
-    searchResult.duration = get_time() - startTime;
+    searchResult.duration = getTime() - startTime;
 
     return searchResult;
 }

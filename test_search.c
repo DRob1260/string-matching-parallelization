@@ -6,6 +6,7 @@
 
 int main(int argc, char* argv[]) {
 
+    // todo: import and use DNA data for testing.
     char* pattern = "the";
     char* target = "the dog chased the cat but the cat was too fast.";
 

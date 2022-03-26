@@ -5,7 +5,7 @@
     #include <stdio.h>
 #endif
 
-double get_time(){
+double getTime(){
     struct timeval t;
     gettimeofday(&t, NULL);
     return t.tv_sec + t.tv_usec/1000000.0;
@@ -14,13 +14,14 @@ double get_time(){
 void printSearchResults(SearchResult searchResult) {
     printf("***********************************\n");
     printf("%s results:\n", searchResult.searchType);
-    printf("Total matches: %i\n", searchResult.matchTotal);
-    printf("Match locations: [ ");
+    printf("\tTotal matches: %i\n", searchResult.matchTotal);
+    printf("\tMatch locations: [ ");
     for(int i=0; i < searchResult.matchTotal; i++) {
         printf("%i", searchResult.matchIndexes[i]);
         if(i != searchResult.matchTotal - 1)
             printf(", ");
     }
     printf(" ]\n");
-    printf("Search duration: %f\n", searchResult.duration);
+    printf("\tSearch duration: %f\n", searchResult.duration);
+    printf("***********************************\n");
 }

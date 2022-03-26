@@ -7,6 +7,6 @@ struct SearchResult_struct {
 
 typedef struct SearchResult_struct SearchResult;
 
-double get_time();
+double getTime();
 
 void printSearchResults(SearchResult searchResult);
