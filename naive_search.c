@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #endif
 
-SearchResult naive_search(char *pattern, int patternSize, char *target, int targetSize) {
+SearchResult naiveSearch(char *pattern, int patternSize, char *target, int targetSize) {
     SearchResult searchResult;
     searchResult.searchType = "Naive Serial Search";
     searchResult.matchIndexes = malloc((targetSize / patternSize) * sizeof(int));
@@ -28,6 +28,15 @@ SearchResult naive_search(char *pattern, int patternSize, char *target, int targ
     }
 
     searchResult.duration = getTime() - startTime;
+
+    return searchResult;
+}
+
+SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, int targetSize, int targetStart, int targetEnd) {
+    SearchResult searchResult;
+    searchResult.searchType = "Naive Parallel Search";
+
+    // TODO: implement naive parallel search
 
     return searchResult;
 }

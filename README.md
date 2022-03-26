@@ -26,3 +26,7 @@ make
 ### naive_search.c
 
 `naive_search.c` is for the naive search algorithms.
+
+### bmh_search.c
+
+`bmh_search.c` is for the Boyer-Moore-Horspool search algorithms.
