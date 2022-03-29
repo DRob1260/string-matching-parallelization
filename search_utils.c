@@ -42,7 +42,7 @@ SearchTarget buildSearchTarget(char *filepath) {
 
     while(sam_read1(fp_in,bamHdr,aln) > 0){
         uint32_t len = aln->core.l_qseq; //length of the read.
-        uint8_t *q = bam_get_seq(aln); //quality string
+        uint8_t *q = bam_get_seq(aln); // sequence string
 
         char *qseq = (char *)malloc(len);
         for(int i=0; i < len ; i++){
