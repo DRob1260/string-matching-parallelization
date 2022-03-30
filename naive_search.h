@@ -7,6 +7,6 @@
 // This typedef already exists in search_utils.h but without adding this, the compiler was unable to find SearchResult.
 typedef struct SearchResult_struct SearchResult;
 
-SearchResult naiveSearch(char *pattern, int patternSize, char *target, int targetSize);
+SearchResult naiveSearch(char *pattern, int patternSize, char *target, long targetSize);
 
-SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, int targetSize, int targetStart, int targetEnd);
+SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, long targetSize, long targetStart, long targetEnd);

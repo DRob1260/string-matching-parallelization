@@ -1,7 +1,7 @@
 struct SearchResult_struct {
     char *searchType;
-    int matchTotal;
-    int *matchIndexes;
+    long matchTotal;
+    long *matchIndexes;
     double duration;
 };
 

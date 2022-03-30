@@ -7,13 +7,14 @@
 
 int main(int argc, char* argv[]) {
 
-    // todo: import and use DNA data for testing.
-    char* pattern = "the";
-    char* target = "the dog chased the cat but the cat was too fast.";
-
-    SearchResult naiveSerialSearchResult = naiveSearch(pattern, 3, target, 48);
-    printSearchResults(naiveSerialSearchResult);
+    // TODO: read and search x patterns from alignments.fastq
+    char* pattern = "CTCAAGGAGAGTCTGAGCTCAAACACATCTAGCCCCTCCCCAACCTGATGGTCCTTCCCTATCCACCCTGGTAGCAGAAGTCACAGAACATATACTCTTGG";
 
     SearchTarget searchTarget = buildSearchTarget("genome.bam");
     printf("SearchTarget length: %li\n", searchTarget.targetLength);
+
+    // Searching for the full alignment size usually results in 0 finds because it's common for alignments to have misreads, gaps, etc.
+    // 14 seems to be the max that will bring back results.
+    SearchResult naiveSerialSearchResult = naiveSearch(pattern, 14, searchTarget.target, searchTarget.targetLength);
+    printSearchResults(naiveSerialSearchResult);
 }
