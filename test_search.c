@@ -7,8 +7,7 @@
 
 int main(int argc, char* argv[]) {
 
-    // TODO: these values to be defined from command line arguments
-
+    // TODO: allow these values to be defined from command line arguments
     int patternLength = 14; // Searching for the full alignment size usually results in 0 finds because it's common for alignments to have misreads, gaps, etc.
     int numPatterns = 30;
     char *alignmentsFilepath = "alignments.fastq";
