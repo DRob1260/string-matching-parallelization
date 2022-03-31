@@ -1,12 +1,15 @@
 #ifndef __INCLUDES_H_
 #define __INCLUDES_H_
 #include "search_utils.h"
+#include "kseq.h"
 #include <sys/time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <htslib/sam.h>
+#include <zlib.h>
 #endif
+KSEQ_INIT(gzFile, gzread)
 
 double getTime(){
     struct timeval t;
@@ -17,6 +20,7 @@ double getTime(){
 void printSearchResults(SearchResult searchResult) {
     printf("***********************************\n");
     printf("%s results:\n", searchResult.searchType);
+    printf("Pattern: %s\n", searchResult.pattern);
     printf("\tTotal matches: %li\n", searchResult.matchTotal);
 //    printf("\tMatch locations: [ ");
 //    for(long i=0; i < searchResult.matchTotal; i++) {
@@ -76,4 +80,23 @@ SearchTarget buildSearchTarget(char *filepath) {
     sam_close(file);
 
     return searchTarget;
+}
+
+void buildSearchPatterns(char *patterns[], char *filepath, int patternLength, int numPatterns) {
+    FILE *file = fopen(filepath, "r");
+    gzFile fp;
+    kseq_t *seq;
+    fp = gzdopen(fileno(file), "r");
+    seq = kseq_init(fp);
+    int currentNumPatterns = 0;
+    while(kseq_read(seq) >= 0 && currentNumPatterns < numPatterns) {
+        if(seq->seq.l > patternLength) {
+            char *pat = malloc(patternLength * sizeof(char));
+            memcpy(pat, seq->seq.s, patternLength);
+            patterns[currentNumPatterns] = pat;
+            currentNumPatterns++;
+        }
+    }
+    kseq_destroy(seq);
+    gzclose(fp);
 }

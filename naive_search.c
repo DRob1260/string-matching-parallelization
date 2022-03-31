@@ -13,6 +13,7 @@ SearchResult naiveSearch(char *pattern, int patternSize, char *target, long targ
     printf("targetSize: %li\n", targetSize);
     SearchResult searchResult;
     searchResult.searchType = "Naive Serial Search";
+    searchResult.pattern = pattern;
     searchResult.matchIndexes = malloc((targetSize / patternSize) * sizeof(long));
     searchResult.matchTotal = 0;
     double startTime = getTime();

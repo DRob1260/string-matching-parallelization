@@ -1,5 +1,6 @@
 struct SearchResult_struct {
     char *searchType;
+    char *pattern;
     long matchTotal;
     long *matchIndexes;
     double duration;
@@ -19,3 +20,5 @@ double getTime();
 void printSearchResults(SearchResult searchResult);
 
 SearchTarget buildSearchTarget(char *filepath);
+
+void buildSearchPatterns(char *patterns[], char *filepath, int patternLength, int numPatterns);
