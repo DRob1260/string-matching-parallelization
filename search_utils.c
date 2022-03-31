@@ -43,7 +43,7 @@ SearchTarget buildSearchTarget(char *filepath) {
     bam_hdr_t *bamHeader = sam_hdr_read(file); // read header
     bam1_t *alignment = bam_init1(); // initialize an alignment
 
-    printf("n_targets: %i\n", bamHeader->n_targets);
+//    printf("n_targets: %i\n", bamHeader->n_targets);
 
     int numberReferences = bamHeader->n_targets;
     uint *referenceLengths = bamHeader->target_len; // target_len is a list of ints representing the size of each reference
@@ -61,7 +61,7 @@ SearchTarget buildSearchTarget(char *filepath) {
     long currentTargetLength = 0;
     while(sam_read1(file, bamHeader, alignment) > 0){
         if(currentTargetLength % 10000000 == 0)
-            printf("Writing %lith character\n", currentTargetLength);
+            printf("...\n");
         uint32_t alignmentLength = alignment->core.l_qseq;
         uint8_t *sequence = bam_get_seq(alignment);
 
