@@ -35,46 +35,40 @@ void printSearchResults(SearchResult searchResult) {
 
 // This function reads the genome.bam file using htslib.sam to build a SearchTarget.
 // htslib.sam docs: http://dhtslib.dpldocs.info/htslib.sam.html.
-SearchTarget buildSearchTarget(char *filepath) {
+SearchTarget buildSearchTarget(char *filepath, long lengthLimit) {
     SearchTarget searchTarget;
-    searchTarget.targetLength = 0;
 
     samFile *file = hts_open(filepath,"r"); // open bam file
     bam_hdr_t *bamHeader = sam_hdr_read(file); // read header
     bam1_t *alignment = bam_init1(); // initialize an alignment
 
-//    printf("n_targets: %i\n", bamHeader->n_targets);
-
-    int numberReferences = bamHeader->n_targets;
-    uint *referenceLengths = bamHeader->target_len; // target_len is a list of ints representing the size of each reference
-    for(int i=0; i < numberReferences; i++) {
-        searchTarget.targetLength += referenceLengths[i];
+    // TODO: there's an error when trying to use the lengthLimit.
+    if(lengthLimit > 0) {
+        searchTarget.targetLength = lengthLimit;
+    } else {
+        searchTarget.targetLength = 0;
+        uint *referenceLengths = bamHeader->target_len; // target_len is a list of ints representing the size of each reference
+        for(int i=0; i < 25; i++) { // add up all of the reference lengths but only the first 25 are relevant.
+            searchTarget.targetLength += referenceLengths[i];
+        }
+        searchTarget.target = malloc(searchTarget.targetLength * sizeof(char));
     }
-    // For some reason, the length calculated above ends up being far less than the actual length read from the BAM file.
-    // For now, searchTarget.target/targetLength are being hard-coded to the appropriate size.
-    // TODO: figure out why the calculation above is incorrect.
-//    searchTarget.target = malloc(searchTarget.targetLength * sizeof(char));
-    searchTarget.target = malloc(4167543494 * sizeof(char));
-    searchTarget.targetLength = 4167543494;
 
     printf("Reading genome into memory. This may take a while...\n");
     long currentTargetLength = 0;
-    while(sam_read1(file, bamHeader, alignment) > 0){
-        if(currentTargetLength % 10000000 == 0)
+    while(currentTargetLength < searchTarget.targetLength && sam_read1(file, bamHeader, alignment) > 0){
+        if(lengthLimit <= 0 && currentTargetLength % 10000000 == 0)
             printf("...\n");
         uint32_t alignmentLength = alignment->core.l_qseq;
         uint8_t *sequence = bam_get_seq(alignment);
 
-        char *sequenceString = (char *)malloc(alignmentLength);
         for(int i=0; i < alignmentLength ; i++){
-            sequenceString[i] = seq_nt16_str[bam_seqi(sequence, i)]; //gets nucleotide id and converts them into IUPAC id.
+            if(currentTargetLength < searchTarget.targetLength)
+                searchTarget.target[currentTargetLength+i] = seq_nt16_str[bam_seqi(sequence, i)]; //gets nucleotide id and converts them into IUPAC id.
         }
-
-        memcpy(searchTarget.target + currentTargetLength, sequenceString, alignmentLength);
         currentTargetLength += alignmentLength;
     }
     printf("Genome read complete.\n");
-//    printf("currentTargetLength: %li\n", currentTargetLength);
 
     bam_destroy1(alignment);
     sam_close(file);

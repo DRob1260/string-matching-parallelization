@@ -19,6 +19,6 @@ double getTime();
 
 void printSearchResults(SearchResult searchResult);
 
-SearchTarget buildSearchTarget(char *filepath);
+SearchTarget buildSearchTarget(char *filepath, long lengthLimit);
 
 void buildSearchPatterns(char *patterns[], char *filepath, int patternLength, int numPatterns);
