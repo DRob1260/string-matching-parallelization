@@ -42,7 +42,6 @@ SearchTarget buildSearchTarget(char *filepath, long lengthLimit) {
     bam_hdr_t *bamHeader = sam_hdr_read(file); // read header
     bam1_t *alignment = bam_init1(); // initialize an alignment
 
-    // TODO: there's an error when trying to use the lengthLimit.
     if(lengthLimit > 0) {
         searchTarget.targetLength = lengthLimit;
     } else {
@@ -51,8 +50,9 @@ SearchTarget buildSearchTarget(char *filepath, long lengthLimit) {
         for(int i=0; i < 25; i++) { // add up all of the reference lengths but only the first 25 are relevant.
             searchTarget.targetLength += referenceLengths[i];
         }
-        searchTarget.target = malloc(searchTarget.targetLength * sizeof(char));
     }
+
+    searchTarget.target = malloc(searchTarget.targetLength * sizeof(char));
 
     printf("Reading genome into memory. This may take a while...\n");
     long currentTargetLength = 0;
