@@ -34,8 +34,13 @@ int main(int argc, char* argv[]) {
     SearchTarget searchTarget = buildSearchTarget(genomeFilePath, targetLengthLimit);
     printf("SearchTarget length: %li\n", searchTarget.targetLength);
 
+    FILE *naiveSerialSearchResultsFile = initializeSearchResultsFile("naive_serial_search_results.csv");
+
     for(int i=0; i < numPatterns; i++) {
         SearchResult naiveSerialSearchResult = naiveSearch(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength);
         printSearchResults(naiveSerialSearchResult);
+        writeSearchResultToFile(naiveSerialSearchResultsFile, naiveSerialSearchResult);
     }
+
+    fclose(naiveSerialSearchResultsFile);
 }

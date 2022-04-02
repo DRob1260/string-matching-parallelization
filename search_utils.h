@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 struct SearchResult_struct {
     char *searchType;
     char *pattern;
@@ -22,3 +24,7 @@ void printSearchResults(SearchResult searchResult);
 SearchTarget buildSearchTarget(char *filepath, long lengthLimit);
 
 void buildSearchPatterns(char *patterns[], char *filepath, int patternLength, int numPatterns);
+
+FILE *initializeSearchResultsFile(char *filename);
+
+void writeSearchResultToFile(FILE *file, SearchResult searchResult);

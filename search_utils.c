@@ -94,3 +94,17 @@ void buildSearchPatterns(char *patterns[], char *filepath, int patternLength, in
     kseq_destroy(seq);
     gzclose(fp);
 }
+
+FILE *initializeSearchResultsFile(char *filename) {
+    FILE *file = fopen(filename, "w+");
+    fprintf(file,"Alignment, Search Duration, Total Matches, Match Locations\n");
+    return file;
+}
+
+void writeSearchResultToFile(FILE *file, SearchResult searchResult) {
+    fprintf(file, "%s, %f, %li", searchResult.pattern, searchResult.duration, searchResult.matchTotal);
+    for(int x=0; x < searchResult.matchTotal; x++) {
+        fprintf(file, ", %li", searchResult.matchIndexes[x]);
+    }
+    fprintf(file, "\n");
+}

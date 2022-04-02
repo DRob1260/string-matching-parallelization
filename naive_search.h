@@ -1,6 +1,6 @@
 #ifndef __INCLUDES_H_
 #define __INCLUDES_H_
-    #include "search_utils.h"
+#include "search_utils.h"
 #endif
 
 // TODO: figure out why this is needed.

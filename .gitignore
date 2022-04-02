@@ -1,3 +1,7 @@
 # compilations
 *.o
 test_search
+alignments.fastq
+genome.bam
+genome.bam.bai
+*.csv
