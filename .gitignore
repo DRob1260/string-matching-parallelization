@@ -3,5 +3,5 @@
 test_search
 *.fastq
 *.bam
-./*.csv
 htslib-*
+naive_serial_search_results.csv
