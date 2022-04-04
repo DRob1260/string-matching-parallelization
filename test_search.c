@@ -41,15 +41,22 @@ int main(int argc, char* argv[]) {
 
     SearchResult searchResult;
 
+    // filename format is <algorithm>_<numThreads>_threads.csv
+    char filename[100];
+    strcat(filename, algorithm);
+    char numThreadsStr[16];
+    sprintf(numThreadsStr, "_%i_threads.csv", numThreads);
+    strcat(filename,numThreadsStr);
     if(strcmp(algorithm, "naive_serial") == 0) {
-        FILE *searchResultsFile = initializeSearchResultsFile("naive_serial_search_results.csv");
+
+        FILE *searchResultsFile = initializeSearchResultsFile(filename);
         for(int i=0; i < numPatterns; i++) {
             searchResult = naiveSearch(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength);
             printSearchResults(searchResult);
             writeSearchResultToFile(searchResultsFile, searchResult);
         }
     } else if(strcmp(algorithm, "naive_parallel") == 0) {
-        FILE *searchResultsFile = initializeSearchResultsFile("naive_parallel_search_results.csv");
+        FILE *searchResultsFile = initializeSearchResultsFile(filename);
         for(int i=0; i < numPatterns; i++) {
             searchResult = naiveSearchParallel(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength, numThreads);
             printSearchResults(searchResult);
