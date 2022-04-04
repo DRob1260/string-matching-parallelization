@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Ihtslib-1.15/include
+CFLAGS := -Wall -Ihtslib-1.15/include -pthread
 OBJFILES := search_utils.o naive_search.o bmh_search.o test_search.o
 TARGET := test_search
 
