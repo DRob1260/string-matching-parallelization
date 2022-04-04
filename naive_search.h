@@ -9,4 +9,4 @@ typedef struct SearchResult_struct SearchResult;
 
 SearchResult naiveSearch(char *pattern, int patternSize, char *target, long targetSize);
 
-SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, long targetSize, long targetStart, long targetEnd);
+SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, long targetSize, int numThreads);

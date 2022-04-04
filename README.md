@@ -45,26 +45,28 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:htslib-1.15/lib"
 
 ### Execute
 ```shell
-./test_search alignments_filepath genome_filepath pattern_length number_of_patterns target_length_limit(optional)
+./test_search algorithm alignments_filepath genome_filepath pattern_length number_of_patterns number_of_threads target_length_limit(optional)
 ```
 
 ### Parameters
+* `algorithm`: Algorithm to be run. Options: "naive_serial", "naive_parallel", "bmh_serial", "bmh_parallel".
 * `alignments_filepath`: Filepath to the .fastq file containing the random reads of DNA (alignments).
 * `genome_filepath`: Filepath to the .bam file containing the full human genome.
 * `pattern_length`: Length of the pattern (alignment) to use. It is common for alignments to have misreads, so searching for the full alignment will often lead to no matches. Using pattern_length of ~14 seems to give good results.
 * `number_of_patterns`: Number of patterns (alignments) to search for.
+* `number_of_threads`: Number of threads to use for parallel algorithms.
 * `target_length_limit`: Optional. Limits the length of the target string (genome). This is useful while developing code and debugging since reading the genome into memory can take a while.
 
 ### Examples
 
-Run 30 searches with pattern length of 14 against the full genome:
+Run 30 searches with pattern length of 14 against the full genome using the serial naive algorithm:
 ```shell
-./test_search alignments.fastq genome.bam 14 30
+./test_search naive_serial alignments.fastq genome.bam 14 30 1
 ```
 
-Run 1 search with pattern length of 5 against the first 1,000,000 bases of the genome:
+Run 1 search with pattern length of 5 against the first 1,000,000 bases of the genome using the parallel naive algorithm on 10 threads: 
 ```shell
-./test_search alignments.fastq genome.bam 5 1 1000000
+./test_search naive_parallel alignments.fastq genome.bam 5 1 10 1000000
 ```
 
 ### Troubleshooting
