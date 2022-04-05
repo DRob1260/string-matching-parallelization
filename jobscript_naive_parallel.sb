@@ -8,18 +8,16 @@
 #SBATCH --export=ALL
 #SBATCH -t 01:30:00
 
-srun -n 1 ./test_search naive_parallel alignments.fastq genome.bam 14 30 1
+./test_search naive_parallel alignments.fastq genome.bam 14 30 1
 
-srun -n 2 ./test_search naive_parallel alignments.fastq genome.bam 14 30 2
+./test_search naive_parallel alignments.fastq genome.bam 14 30 2
 
-srun -n 4 ./test_search naive_parallel alignments.fastq genome.bam 14 30 4
+./test_search naive_parallel alignments.fastq genome.bam 14 30 4
 
-srun -n 8 ./test_search naive_parallel alignments.fastq genome.bam 14 30 8
+./test_search naive_parallel alignments.fastq genome.bam 14 30 8
 
-srun -n 16 ./test_search naive_parallel alignments.fastq genome.bam 14 30 16
+./test_search naive_parallel alignments.fastq genome.bam 14 30 16
 
-srun -n 32 ./test_search naive_parallel alignments.fastq genome.bam 14 30 32
+./test_search naive_parallel alignments.fastq genome.bam 14 30 32
 
-srun -n 64 ./test_search naive_parallel alignments.fastq genome.bam 14 30 64
-
-srun -n 128 ./test_search naive_parallel alignments.fastq genome.bam 14 30 128
+./test_search naive_parallel alignments.fastq genome.bam 14 30 64
