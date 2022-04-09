@@ -32,15 +32,26 @@ make
 ___
 ### Prerequisites
 
-#### Download Datasets 
-These are large files so it may take a while to download.
-* Alignments: ftp://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L002_R1_001_trimmed.fastq.gz
-* Genome: ftp://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/project.NIST_NIST7086_H7AP8ADXX_CGTACTAG_2_NA12878.bwa.markDuplicates.bam
+#### Download & Prepare Datasets 
+These are large files so they may take a while to download. Perform the below commands in the project directory.
 
-You can use `wget` in a terminal session to download them into the project directory. For example:
+##### Download
 ```shell
 wget ftp://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/NIST7035_TAAGGCGA_L002_R1_001_trimmed.fastq.gz
 wget ftp://ftp-trace.ncbi.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/project.NIST_NIST7086_H7AP8ADXX_CGTACTAG_2_NA12878.bwa.markDuplicates.bam
+```
+
+##### Unzip
+The alignments file is compressed, so it needs to be decompressed.
+```shell
+gzip -d NIST7035_TAAGGCGA_L002_R1_001_trimmed.fastq.gz
+```
+
+##### Rename
+For simplicity/clarity, rename the files.
+```shell
+mv NIST7035_TAAGGCGA_L002_R1_001_trimmed.fastq alignments.fastq
+mv NIST_NIST7086_H7AP8ADXX_CGTACTAG_2_NA12878.bwa.markDuplicates.bam genome.bam
 ```
 
 #### Set LD_LIBRARY_PATH
