@@ -51,7 +51,7 @@ gzip -d NIST7035_TAAGGCGA_L002_R1_001_trimmed.fastq.gz
 For simplicity/clarity, rename the files.
 ```shell
 mv NIST7035_TAAGGCGA_L002_R1_001_trimmed.fastq alignments.fastq
-mv NIST_NIST7086_H7AP8ADXX_CGTACTAG_2_NA12878.bwa.markDuplicates.bam genome.bam
+mv project.NIST_NIST7086_H7AP8ADXX_CGTACTAG_2_NA12878.bwa.markDuplicates.bam genome.bam
 ```
 
 #### Set LD_LIBRARY_PATH
