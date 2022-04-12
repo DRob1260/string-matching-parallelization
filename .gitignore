@@ -6,3 +6,4 @@ test_search
 htslib-*
 naive_serial_search_results.csv
 naive_parallel_search_results.csv
+/*.csv

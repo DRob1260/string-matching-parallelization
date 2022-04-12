@@ -16,10 +16,10 @@ int main(int argc, char* argv[]) {
     int numPatterns = atoi(argv[5]);
     int numThreads = atoi(argv[6]);
     long targetLengthLimit = -1;
-    char *algorithm = malloc(14 * sizeof(char));
+    char *algorithm = malloc(22 * sizeof(char));
     char *alignmentsFilepath = malloc(100 * sizeof(char));
     char *genomeFilePath = malloc(100 * sizeof(char));
-    strncpy(algorithm, argv[1], 20);
+    strncpy(algorithm, argv[1], 22);
     strncpy(alignmentsFilepath, argv[2], 100);
     strncpy(genomeFilePath, argv[3], 100);
     printf("Input algorithm: %s\n", algorithm);
@@ -55,10 +55,18 @@ int main(int argc, char* argv[]) {
             printSearchResults(searchResult);
             writeSearchResultToFile(searchResultsFile, searchResult);
         }
-    } else if(strcmp(algorithm, "naive_parallel") == 0) {
+    } else if(strcmp(algorithm, "naive_parallel_pthread") == 0) {
         FILE *searchResultsFile = initializeSearchResultsFile(filename);
         for(int i=0; i < numPatterns; i++) {
-            searchResult = naiveSearchParallel(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength, numThreads);
+            searchResult = naiveSearchParallelPthread(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength, numThreads);
+            printSearchResults(searchResult);
+            writeSearchResultToFile(searchResultsFile, searchResult);
+        }
+    } else if(strcmp(algorithm, "naive_parallel_omp") == 0) {
+        FILE *searchResultsFile = initializeSearchResultsFile(filename);
+
+        for(int i=0; i < numPatterns; i++) {
+            searchResult = naiveSearchParallelOMP(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength, numThreads);
             printSearchResults(searchResult);
             writeSearchResultToFile(searchResultsFile, searchResult);
         }

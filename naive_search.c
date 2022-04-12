@@ -6,9 +6,10 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <omp.h>
 #endif
 
-void *naiveSearchParallelThreadFunction(void *params);
+void *naiveSearchParallelPthreadFunction(void *params);
 
 SearchResult naiveSearch(char *pattern, int patternSize, char *target, long targetSize) {
     printf("Starting Naive Serial Search.\n");
@@ -40,6 +41,43 @@ SearchResult naiveSearch(char *pattern, int patternSize, char *target, long targ
     return searchResult;
 }
 
+SearchResult naiveSearchParallelOMP(char *pattern, int patternSize, char *target, long targetSize, int numThreads) {
+    printf("Starting Naive Parallel Search using OMP.\n");
+    printf("patternSize: %i\n", patternSize);
+    printf("targetSize: %li\n", targetSize);
+    SearchResult searchResult;
+    searchResult.searchType = "Naive Parallel OMP Search";
+    searchResult.pattern = pattern;
+    searchResult.matchIndexes = malloc((targetSize / patternSize) * sizeof(long));
+    searchResult.matchTotal = 0;
+    double startTime = getTime();
+
+    omp_set_num_threads(numThreads);
+
+    #pragma omp parallel for
+    for(long t=0; t < targetSize; t++) {
+        bool isMatch = true;
+        for(int p=0; p < patternSize; p++) {
+            if(target[t+p] != pattern[p]) {
+                isMatch = false;
+                break;
+            }
+        }
+
+        if(isMatch) {
+            #pragma omp critical 
+            {
+                searchResult.matchIndexes[searchResult.matchTotal] = t;
+                searchResult.matchTotal++;
+            }
+        }
+    }
+    
+    searchResult.duration = getTime() - startTime;
+
+    return searchResult;
+}
+
 struct NaiveSearchParallelThreadFunctionParams {
     char *pattern;
     int patternSize;
@@ -49,8 +87,8 @@ struct NaiveSearchParallelThreadFunctionParams {
     long targetEnd;
 };
 
-SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, long targetSize, int numThreads) {
-    printf("Starting Naive Parallel Search.\n");
+SearchResult naiveSearchParallelPthread(char *pattern, int patternSize, char *target, long targetSize, int numThreads) {
+    printf("Starting Naive Parallel Pthread Search.\n");
     printf("patternSize: %i\n", patternSize);
     printf("targetSize: %li\n", targetSize);
     printf("numThreads: %i\n", numThreads);
@@ -68,7 +106,7 @@ SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, l
         long targetStart = i * (targetSize / numThreads);
         long targetEnd = targetStart + (targetSize / numThreads) - 1;
         if(i == numThreads-1)
-            targetEnd = targetSize-1;
+            targetEnd = targetSize - patternSize; // very last location in target a match can occur
 
         struct NaiveSearchParallelThreadFunctionParams *params = malloc(sizeof(struct NaiveSearchParallelThreadFunctionParams));
         params->pattern = pattern;
@@ -77,7 +115,7 @@ SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, l
         params->targetSize = targetSize;
         params->targetStart = targetStart;
         params->targetEnd = targetEnd;
-        pthread_create(&pthreads[i], NULL, naiveSearchParallelThreadFunction, params);
+        pthread_create(&pthreads[i], NULL, naiveSearchParallelPthreadFunction, params);
     }
 
     SearchResult *searchResults[numThreads];
@@ -100,7 +138,7 @@ SearchResult naiveSearchParallel(char *pattern, int patternSize, char *target, l
     return searchResult;
 }
 
-void *naiveSearchParallelThreadFunction(void *paramsPtr) {
+void *naiveSearchParallelPthreadFunction(void *paramsPtr) {
     struct NaiveSearchParallelThreadFunctionParams *params = paramsPtr;
 
     SearchResult *searchResult = malloc(sizeof(SearchResult));
@@ -109,12 +147,20 @@ void *naiveSearchParallelThreadFunction(void *paramsPtr) {
 
     for(long t=params->targetStart; t < params->targetEnd; t++) {
         bool isMatch = true;
+
+        // if(t + params->patternSize == params->targetSize) {
+        //     isMatch = false;
+        //     printf("End of search location (%li) == targetSize (%li); stopping search.\n", t + params->patternSize, params->targetSize);
+        //     break;
+        // }
+
         for(int p=0; p < params->patternSize; p++) {
             if(params->target[t+p] != params->pattern[p]) {
                 isMatch = false;
                 break;
             }
         }
+
         if(isMatch) {
             searchResult->matchIndexes[searchResult->matchTotal] = t;
             searchResult->matchTotal++;

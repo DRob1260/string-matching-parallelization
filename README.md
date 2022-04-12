@@ -51,7 +51,7 @@ gzip -d NIST7035_TAAGGCGA_L002_R1_001_trimmed.fastq.gz
 For simplicity/clarity, rename the files.
 ```shell
 mv NIST7035_TAAGGCGA_L002_R1_001_trimmed.fastq alignments.fastq
-mv NIST_NIST7086_H7AP8ADXX_CGTACTAG_2_NA12878.bwa.markDuplicates.bam genome.bam
+mv project.NIST_NIST7086_H7AP8ADXX_CGTACTAG_2_NA12878.bwa.markDuplicates.bam genome.bam
 ```
 
 #### Set LD_LIBRARY_PATH
@@ -66,7 +66,7 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:htslib-1.15/lib"
 ```
 
 ### Parameters
-* `algorithm`: Algorithm to be run. Options: "naive_serial", "naive_parallel", "bmh_serial", "bmh_parallel".
+* `algorithm`: Algorithm to be run. Options: "naive_serial", "naive_parallel_omp", "naive_parallel_pthread", "bmh_serial", "bmh_parallel".
 * `alignments_filepath`: Filepath to the .fastq file containing the random reads of DNA (alignments).
 * `genome_filepath`: Filepath to the .bam file containing the full human genome.
 * `pattern_length`: Length of the pattern (alignment) to use. It is common for alignments to have misreads, so searching for the full alignment will often lead to no matches. Using pattern_length of ~14 seems to give good results.
@@ -81,9 +81,9 @@ Run 30 searches with pattern length of 14 against the full genome using the seri
 ./test_search naive_serial alignments.fastq genome.bam 14 30 1
 ```
 
-Run 1 search with pattern length of 5 against the first 1,000,000 bases of the genome using the parallel naive algorithm on 10 threads: 
+Run 1 search with pattern length of 5 against the first 1,000,000 bases of the genome using the parallel omp naive algorithm on 10 threads: 
 ```shell
-./test_search naive_parallel alignments.fastq genome.bam 5 1 10 1000000
+./test_search naive_parallel_omp alignments.fastq genome.bam 5 1 10 1000000
 ```
 
 ### Troubleshooting
