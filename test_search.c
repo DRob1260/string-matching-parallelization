@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
     // filename format is <algorithm>_<numThreads>_threads.csv
     char filename[100];
     strcat(filename, algorithm);
-    char numThreadsStr[16];
+    char numThreadsStr[17];
     sprintf(numThreadsStr, "_%i_threads.csv", numThreads);
     strcat(filename,numThreadsStr);
     if(strcmp(algorithm, "naive_serial") == 0) {
