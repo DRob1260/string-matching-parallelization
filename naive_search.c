@@ -9,8 +9,6 @@
 #include <omp.h>
 #endif
 
-void *naiveSearchParallelPthreadFunction(void *params);
-
 SearchResult naiveSearch(char *pattern, int patternSize, char *target, long targetSize) {
     printf("Starting Naive Serial Search.\n");
     printf("patternSize: %i\n", patternSize);
