@@ -8,7 +8,6 @@
 #endif
 
 __global__ void cudaFunction(char *pattern, int patternSize, char *target, long targetSize, int numThreads, SearchResult *searchResults[]) {
-    double startTime = getTime();
     int threadIndex = blockIdx.x * blockDim.x + threadIdx.x;
     long searchSize = targetSize / numThreads;
     long start = threadIndex * searchSize;
@@ -18,10 +17,10 @@ __global__ void cudaFunction(char *pattern, int patternSize, char *target, long 
     }
 
     SearchResult searchResult;
-    searchResult.matchIndexes = malloc((searchSize / patternSize) * sizeof(long));
+    searchResult.matchIndexes = (long *)malloc((searchSize / patternSize) * sizeof(long));
     searchResult.matchTotal = 0;
 
-    for(long t=start; t < start+searchSize; t++) {
+    for(long t=start; t < end; t++) {
         bool isMatch = true;
         for(int p=0; p < patternSize; p++) {
             if(target[t+p] != pattern[p]) {
@@ -35,9 +34,8 @@ __global__ void cudaFunction(char *pattern, int patternSize, char *target, long 
             searchResult.matchTotal++;
         }
     }
-    searchResult.duration = getTime() - startTime;
 
-    searchResults[threadIndex] = searchResult;
+    *searchResults[threadIndex] = searchResult;
 }
 
 SearchResult naiveSearchParallelCuda(char *pattern, int patternSize, char *target, long targetSize, int numThreads, int blockSize) {
@@ -50,11 +48,11 @@ SearchResult naiveSearchParallelCuda(char *pattern, int patternSize, char *targe
     SearchResult searchResult;
     searchResult.searchType = "Naive Parallel Cuda Search";
     searchResult.pattern = pattern;
-    searchResult.matchIndexes = malloc((targetSize / patternSize) * sizeof(long));
+    searchResult.matchIndexes = (long *)malloc((targetSize / patternSize) * sizeof(long));
     searchResult.matchTotal = 0;
    
     SearchResult *searchResults[numThreads]; 
-    int numBlocks = ceil(double(n)/blockSize);
+    int numBlocks = ceil(double(numThreads)/blockSize);
     cudaFunction<<<numBlocks, blockSize>>>(pattern, patternSize, target, targetSize, numThreads, searchResults);
     cudaDeviceSynchronize();
 

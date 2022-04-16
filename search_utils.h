@@ -23,8 +23,14 @@ void printSearchResults(SearchResult searchResult);
 
 SearchTarget buildSearchTarget(char *filepath, long lengthLimit);
 
+SearchTarget initializeSearchTarget(char *filepath, long lengthLimit);
+
+void finalizeSearchTarget(char *filepath, SearchTarget searchTarget);
+
 void buildSearchPatterns(char *patterns[], char *filepath, int patternLength, int numPatterns);
 
 FILE *initializeSearchResultsFile(char *filename);
 
 void writeSearchResultToFile(FILE *file, SearchResult searchResult);
+
+long getSearchTargetSize(char *filepath, long lengthLimit);

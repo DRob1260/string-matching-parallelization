@@ -1,5 +1,5 @@
 NVCC := nvcc
-NVCCFLAGS := 
+NVCCFLAGS :=
 NVCCOBJFILES := naive_search_cuda.o test_search_cuda.o
 CC := gcc
 CFLAGS := -Wall -Ihtslib-1.15/include -nostartfiles -g
@@ -9,13 +9,13 @@ TARGET := test_search_cuda
 all: $(TARGET)
 
 search_utils.o: search_utils.c 
-	$(CC) $(CFLAGS) -o search_utils.o search_utils.c -Lhtslib-1.15/lib -lhts -lz
+	$(CC) $(CFLAGS) -c search_utils.c -Lhtslib-1.15/lib -lhts -lz
 
 naive_search_cuda.o: naive_search_cuda.cu search_utils.o 
-	$(NVCC) $(NVCCFLAGS) -o naive_search_cuda.o naive_search_cuda.cu search_utils.o
+	$(NVCC) $(NVCCFLAGS) -c naive_search_cuda.cu search_utils.o -lcudart -lcuda
 
-$(TARGET): $(COBJFILES) $(NVCCOBJFILES)
-	$(NVCC) $(CFLAGS) -o $(TARGET) $(COBJFILES) $(NVCCOBJFILES) 
+test_search_cuda.o: test_search_cuda.cu naive_search_cuda.o search_utils.o
+	$(NVCC) $(NVCCFLAGS) -c test_search_cuda.cu naive_search_cuda.o search_utils.o -lcudart -lcuda
 
 clean:
 	rm -f $(COBJFILES) $(NVCCOBJFILES) $(TARGET) *~

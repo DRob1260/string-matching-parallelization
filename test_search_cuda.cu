@@ -7,6 +7,8 @@
 #include <stdlib.h>
 #endif
 
+SearchTarget buildSearchTargetCuda(char *filepath, long lengthLimit);
+
 // todo: malloc needs to be replaced with cudaMallocManaged
 int main(int argc, char* argv[]) {
 
@@ -19,8 +21,8 @@ int main(int argc, char* argv[]) {
     int numThreads = atoi(argv[5]);
     int blockSize = atoi(argv[6]);
     long targetLengthLimit = -1;
-    char *alignmentsFilepath = malloc(100 * sizeof(char));
-    char *genomeFilePath = malloc(100 * sizeof(char));
+    char *alignmentsFilepath = (char *)malloc(100 * sizeof(char));
+    char *genomeFilePath = (char *)malloc(100 * sizeof(char));
     strncpy(alignmentsFilepath, argv[1], 100);
     strncpy(genomeFilePath, argv[2], 100);
     printf("Input alignments filepath: %s\n", alignmentsFilepath);
@@ -34,9 +36,12 @@ int main(int argc, char* argv[]) {
     }
 
     char *patterns[numPatterns];
+    cudaMallocManaged(patterns, numPatterns * sizeof(char[numPatterns]));
     buildSearchPatterns(patterns, alignmentsFilepath, patternLength, numPatterns);
 
-    SearchTarget searchTarget = buildSearchTarget(genomeFilePath, targetLengthLimit);
+    SearchTarget searchTarget = initializeSearchTarget(genomeFilePath, targetLengthLimit);
+    cudaMallocManaged(&searchTarget.target, searchTarget.targetLength * sizeof(char));
+    finalizeSearchTarget(genomeFilePath, searchTarget);
     printf("SearchTarget length: %li\n", searchTarget.targetLength);
 
     SearchResult searchResult;
@@ -54,4 +59,5 @@ int main(int argc, char* argv[]) {
         printSearchResults(searchResult);
         writeSearchResultToFile(searchResultsFile, searchResult);
     }
+
 }

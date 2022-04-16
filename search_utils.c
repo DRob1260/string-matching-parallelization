@@ -33,11 +33,9 @@ void printSearchResults(SearchResult searchResult) {
     printf("***********************************\n");
 }
 
-// This function reads the genome.bam file using htslib.sam to build a SearchTarget.
-// htslib.sam docs: http://dhtslib.dpldocs.info/htslib.sam.html.
-SearchTarget buildSearchTarget(char *filepath, long lengthLimit) {
+SearchTarget initializeSearchTarget(char *filepath, long lengthLimit) {
     SearchTarget searchTarget;
-
+    
     samFile *file = hts_open(filepath,"r"); // open bam file
     bam_hdr_t *bamHeader = sam_hdr_read(file); // read header
     bam1_t *alignment = bam_init1(); // initialize an alignment
@@ -52,12 +50,27 @@ SearchTarget buildSearchTarget(char *filepath, long lengthLimit) {
         }
     }
 
-    searchTarget.target = malloc(searchTarget.targetLength * sizeof(char));
+    bam_destroy1(alignment);
+    sam_close(file);
+
+    return searchTarget;
+}
+
+void finalizeSearchTarget(char *filepath, SearchTarget searchTarget) {
+    samFile *file = hts_open(filepath,"r"); // open bam file
+    bam_hdr_t *bamHeader = sam_hdr_read(file); // read header
+    bam1_t *alignment = bam_init1(); // initialize an alignment
+
+    searchTarget.targetLength = 0;
+    uint *referenceLengths = bamHeader->target_len; // target_len is a list of ints representing the size of each reference
+    for(int i=0; i < 25; i++) { // add up all of the reference lengths but only the first 25 are relevant.
+        searchTarget.targetLength += referenceLengths[i];
+    }
 
     printf("Reading genome into memory. This may take a while...\n");
     long currentTargetLength = 0;
     while(currentTargetLength < searchTarget.targetLength && sam_read1(file, bamHeader, alignment) > 0){
-        if(lengthLimit <= 0 && currentTargetLength % 10000000 == 0)
+        if(searchTarget.targetLength > 1000000000 && currentTargetLength % 10000000 == 0)
             printf("...\n");
         uint32_t alignmentLength = alignment->core.l_qseq;
         uint8_t *sequence = bam_get_seq(alignment);
@@ -72,6 +85,14 @@ SearchTarget buildSearchTarget(char *filepath, long lengthLimit) {
 
     bam_destroy1(alignment);
     sam_close(file);
+}  
+
+// This function reads the genome.bam file using htslib.sam to build a SearchTarget.
+// htslib.sam docs: http://dhtslib.dpldocs.info/htslib.sam.html.
+SearchTarget buildSearchTarget(char *filepath, long lengthLimit) {
+    SearchTarget searchTarget = initializeSearchTarget(filepath, lengthLimit);
+    searchTarget.target = malloc(searchTarget.targetLength * sizeof(char));
+    finalizeSearchTarget(filepath, searchTarget);
 
     return searchTarget;
 }
