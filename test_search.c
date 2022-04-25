@@ -1,6 +1,7 @@
 #ifndef __INCLUDES_H_
 #define __INCLUDES_H_
 #include "naive_search.h"
+#include "bmh_search.h"
 #include "search_utils.h"
 #include <stdio.h>
 #include <string.h>
@@ -48,7 +49,6 @@ int main(int argc, char* argv[]) {
     sprintf(numThreadsStr, "_%i_threads.csv", numThreads);
     strcat(filename,numThreadsStr);
     if(strcmp(algorithm, "naive_serial") == 0) {
-
         FILE *searchResultsFile = initializeSearchResultsFile(filename);
         for(int i=0; i < numPatterns; i++) {
             searchResult = naiveSearch(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength);
@@ -64,9 +64,15 @@ int main(int argc, char* argv[]) {
         }
     } else if(strcmp(algorithm, "naive_parallel_omp") == 0) {
         FILE *searchResultsFile = initializeSearchResultsFile(filename);
-
         for(int i=0; i < numPatterns; i++) {
             searchResult = naiveSearchParallelOMP(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength, numThreads);
+            printSearchResults(searchResult);
+            writeSearchResultToFile(searchResultsFile, searchResult);
+        }
+    }  else if(strcmp(algorithm, "bmh_serial") == 0) {
+        FILE *searchResultsFile = initializeSearchResultsFile(filename);
+        for(int i=0; i < numPatterns; i++) {
+            searchResult = bmhSearch(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength);
             printSearchResults(searchResult);
             writeSearchResultToFile(searchResultsFile, searchResult);
         }
