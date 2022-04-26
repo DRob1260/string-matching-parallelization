@@ -8,19 +8,6 @@
 #define MAX 256
 int st[MAX-1];
 
-// void buildShiftTable(int shiftTable[], char p[]){
-//     int i,j,m;
-//     m = strlen(p);
-
-//     for(i=0;i<MAX;i++){
-//         shiftTable[i]=m;
-//     }
-
-//     for(j=0;j<m-1;j++){
-//         shiftTable[p[j]]=m-1-j;
-//     }
-// }
-
 void shiftTable(char p[]){
   int i,j,m;
   m = strlen(p);
