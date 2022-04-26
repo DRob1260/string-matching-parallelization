@@ -6,22 +6,32 @@
 #include <stdlib.h>
 #endif
 #define MAX 256
+int st[MAX-1];
 
-int buildShiftTable[](char p[]){
-    int i,j,m;
-    m = strlen(p);
+// void buildShiftTable(int shiftTable[], char p[]){
+//     int i,j,m;
+//     m = strlen(p);
 
-    int shiftTable[MAX-1];
+//     for(i=0;i<MAX;i++){
+//         shiftTable[i]=m;
+//     }
 
-    for(i=0;i<MAX;i++){
-        shiftTable[i]=m;
-    }
+//     for(j=0;j<m-1;j++){
+//         shiftTable[p[j]]=m-1-j;
+//     }
+// }
 
-    for(j=0;j<m-1;j++){
-        shiftTable[p[j]]=m-1-j;
-    }
+void shiftTable(char p[]){
+  int i,j,m;
+  m = strlen(p);
 
-    return shiftTable;
+  for(i=0;i<MAX;i++){
+    st[i]=m;
+  }
+
+  for(j=0;j<m-1;j++){
+    st[p[j]]=m-1-j;
+  }
 }
 
 SearchResult bmhSearch(char *pattern, int patternSize, char *target, long targetSize) {
@@ -35,25 +45,29 @@ SearchResult bmhSearch(char *pattern, int patternSize, char *target, long target
     searchResult.matchTotal = 0;
     double startTime = getTime();
 
-    int shiftTable = buildShiftTable(pattern);
-    int i = targetSize - 1;
-    int k=0;
-    int w=0;
+    long i,k,n,m;
+    n = targetSize;
+    m = patternSize;
+    shiftTable(pattern);
+    i=m-1;
+    k=0;
 
     while(i<n){
-        while((k<m) && (pattern[m-1-k] == target[i-k])) {
+        while((k<m)&&(pattern[m-1-k]==target[i-k])){
             k++;
         }
         if(k==m){
-            i = i + shiftTable[str[i]];
-            int location = (i-m+1);
-            searchResult.matchIndexes[w] = location;
-            searchResult.matchTotal++;
             k=0;
-        }else{
-            i = i + shiftTable[str[i]];
+            i = i + st[target[i]];
+            int location =(i-m+1);
+            searchResult.matchIndexes[searchResult.matchTotal] = location;
+            searchResult.matchTotal++;
+        } else {
+            i = i + st[target[i]];
         }
     }
+
+    searchResult.duration = getTime() - startTime;
 
     return searchResult;
 }
