@@ -40,13 +40,14 @@ SearchResult bmhSearch(char *pattern, int patternSize, char *target, long target
     k=0;
 
     while(i<n){
+        k=0;
         while((k<m)&&(pattern[m-1-k]==target[i-k])){
             k++;
         }
         if(k==m){
             k=0;
             i = i + st[(int)target[i]];
-            int location =(i-m+1);
+            long location =(i-m+1);
             searchResult.matchIndexes[searchResult.matchTotal] = location;
             searchResult.matchTotal++;
         } else {
