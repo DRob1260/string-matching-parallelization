@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #endif
 #define MAX 256
-int st[MAX-1];
+int st[MAX]; 
 
 void shiftTable(char p[]){
   int i,j,m;
@@ -17,7 +17,7 @@ void shiftTable(char p[]){
   }
 
   for(j=0;j<m-1;j++){
-    st[p[j]]=m-1-j;
+    st[(int)p[j]]=m-1-j;
   }
 }
 
@@ -45,12 +45,12 @@ SearchResult bmhSearch(char *pattern, int patternSize, char *target, long target
         }
         if(k==m){
             k=0;
-            i = i + st[target[i]];
+            i = i + st[(int)target[i]];
             int location =(i-m+1);
             searchResult.matchIndexes[searchResult.matchTotal] = location;
             searchResult.matchTotal++;
         } else {
-            i = i + st[target[i]];
+            i = i + st[(int)target[i]];
         }
     }
 
