@@ -69,10 +69,17 @@ int main(int argc, char* argv[]) {
             printSearchResults(searchResult);
             writeSearchResultToFile(searchResultsFile, searchResult);
         }
-    }  else if(strcmp(algorithm, "bmh_serial") == 0) {
+    } else if(strcmp(algorithm, "bmh_serial") == 0) {
         FILE *searchResultsFile = initializeSearchResultsFile(filename);
         for(int i=0; i < numPatterns; i++) {
             searchResult = bmhSearch(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength);
+            printSearchResults(searchResult);
+            writeSearchResultToFile(searchResultsFile, searchResult);
+        }
+    } else if(strcmp(algorithm, "bmh_parallel") == 0) {
+        FILE *searchResultsFile = initializeSearchResultsFile(filename);
+        for(int i=0; i < numPatterns; i++) {
+            searchResult = bmhSearchParallel(patterns[i], patternLength, searchTarget.target, searchTarget.targetLength, numThreads);
             printSearchResults(searchResult);
             writeSearchResultToFile(searchResultsFile, searchResult);
         }

@@ -9,4 +9,4 @@ typedef struct SearchResult_struct SearchResult;
 
 SearchResult bmhSearch(char *pattern, int patternSize, char *target, long targetSize);
 
-SearchResult bmhSearchParallel(char *pattern, int patternSize, char *target, long targetSize, long targetStart, long targetEnd);
+SearchResult bmhSearchParallel(char *pattern, int patternSize, char *target, long targetSize, int numThreads);
